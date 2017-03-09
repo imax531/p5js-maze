@@ -30,6 +30,7 @@ function building() {
 			fill(END_COLOR)
 			drawRectAt(destCell.pos)
 			state = new solving()
+			state.setup()
 		}
 	}
 	

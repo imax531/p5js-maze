@@ -6,6 +6,8 @@ var START_COLOR = 'green'
 var END_COLOR = 'red'
 var HOVER_COLOR = 'pink'
 
+var startCell;
+var destCell;
 var state;
 
 function getTBvalue(name) {
@@ -48,10 +50,14 @@ function draw() {
 	state.draw()
 }
 
-function drawRectAt(v) {
+function drawRectAt(v, size) {
+	size = size || 1
+	if (size > 1) size = 1
 	pxlfx = -1
 	posfx = 0
-	rect(v.x*pxlsz+posfx, v.y*pxlsz+posfx, pxlsz+pxlfx, pxlsz+pxlfx)
+	rect(v.x*pxlsz+posfx + (1-size)*pxlsz/2,		// x
+		 v.y*pxlsz+posfx + (1-size)*pxlsz/2,		// y
+		(pxlsz+pxlfx)*size, (pxlsz+pxlfx)*size)		// size
 }
 
 function mouseClicked() {
