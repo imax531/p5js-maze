@@ -23,6 +23,7 @@ function solving() {
 			fill(150)
 			drawRectAt(this.prevsq)
 		}
+		
 		mousePos = createVector(floor(mouseX/pxlsz), floor(mouseY/pxlsz))
 		this.addCells(0)
 		fill(HOVER_COLOR)
@@ -30,6 +31,11 @@ function solving() {
 			drawRectAt(mousePos, 0.5)
 			this.prevsq = mousePos
 		}
+		
+		fill(START_COLOR)
+		drawRectAt(startCell.pos, 0.7)
+		fill(END_COLOR)
+		drawRectAt(destCell.pos, 0.7)
 		
 		if (this.path[this.path.length-1] == destCell) {
 			this.finished = true
@@ -46,10 +52,7 @@ function solving() {
 	
 	this.addCells = function(arr) {
 		// reset color
-		fill(150)
-		for (i = 0; i < this.path.length; i++)
-			if (this.path[i] != startCell && this.path[i] != destCell)
-				drawRectAt(this.path[i].pos)
+		this.paintPath(150)
 		
 		// calc new path
 		if (!this.backtrack()) {
@@ -58,10 +61,20 @@ function solving() {
 		}
 		
 		// color new path
-		fill(BUILDING_COLOR)
-		for (i = 0; i < this.path.length; i++)
-			if (this.path[i] != startCell && this.path[i] != destCell)
-				drawRectAt(this.path[i].pos, 0.5)
+		this.paintPath(BUILDING_COLOR, 0.52)
+	}
+	
+	this.paintPath = function(color, size) {
+		size = size || 1
+		fill(color)
+		for (i = 0; i < this.path.length; i++) {
+			drawRectAt(this.path[i].pos, size)
+			if (i+1 < this.path.length) {
+				connection = p5.Vector.add(this.path[i].pos, this.path[i+1].pos)
+				connection.div(2)
+				drawRectAt(connection, size)
+			}
+		}
 	}
 	
 	// this function is used for two things:
@@ -78,7 +91,7 @@ function solving() {
 	}
 	
 	this.backtrack = function() {
-		for (i = 0; i < this.path.length; i++)
+		for (i = 0; i < this.path.length-1; i++)
 			if (this.path[i].pos.equals(mousePos)) {
 				this.path.splice(max(1, i), this.path.length - i)
 				return true

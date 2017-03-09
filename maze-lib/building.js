@@ -25,10 +25,6 @@ function building() {
 			}
 		} else {
 			console.log("done")
-			fill(START_COLOR)
-			drawRectAt(startCell.pos)
-			fill(END_COLOR)
-			drawRectAt(destCell.pos)
 			state = new solving()
 			state.setup()
 		}
