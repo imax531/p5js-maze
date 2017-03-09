@@ -7,6 +7,7 @@ function solving() {
 
 	// too low  = low autofil capability
 	// too high = takes too long
+	this.depth = 7
 	
 	this.setup = function() {
 		this.path = [startCell]
