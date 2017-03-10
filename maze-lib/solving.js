@@ -4,16 +4,23 @@ function solving() {
 	this.startTime
 	this.prevsq
 	this.finished
-
+	this.startCell
+	this.destCell
+	
 	// too low  = low autofil capability
 	// too high = takes too long
 	this.depth = 7
 	
 	this.setup = function() {
-		this.path = [startCell]
+		do {
+			this.startCell = maze[floor(random()*brdsz)][floor(random()*brdsz)]
+			this.destCell = maze[floor(random()*brdsz)][floor(random()*brdsz)]
+		} while(this.startCell.pos.dist(this.destCell.pos) < sqrt(brdsz))
+
+		this.path = [this.startCell]
 		this.startTime = millis()
 		this.prevsq = 0
-		this.finished = false
+		this.finished = false		
 	}
 	
 	this.draw = function() {
@@ -26,18 +33,13 @@ function solving() {
 		
 		mousePos = createVector(floor(mouseX/pxlsz), floor(mouseY/pxlsz))
 		this.addCells(0)
-		fill(HOVER_COLOR)
-		if (!mousePos.equals(startCell.pos) && !mousePos.equals(destCell.pos)) {
-			drawRectAt(mousePos, 0.5)
-			this.prevsq = mousePos
-		}
 		
 		fill(START_COLOR)
-		drawRectAt(startCell.pos, 0.7)
+		drawRectAt(this.startCell.pos, 0.7)
 		fill(END_COLOR)
-		drawRectAt(destCell.pos, 0.7)
+		drawRectAt(this.destCell.pos, 0.7)
 		
-		if (this.path[this.path.length-1] == destCell) {
+		if (this.path[this.path.length-1] == this.destCell) {
 			this.finished = true
 			push();
 			fill(0);
@@ -47,6 +49,12 @@ function solving() {
 			t = floor(millis() - this.startTime) / 1000
 			text("Well done! It took you\n" + t + " seconds\nto solve the maze!", width/2, height/2);
 			pop();
+		} else {
+			fill(HOVER_COLOR)
+			if (!mousePos.equals(this.startCell.pos) && !mousePos.equals(this.destCell.pos)) {
+				drawRectAt(mousePos, 0.5)
+				this.prevsq = mousePos
+			}
 		}
 	}
 	
@@ -61,18 +69,24 @@ function solving() {
 		}
 		
 		// color new path
-		this.paintPath(BUILDING_COLOR, 0.52)
+		this.paintPath(BUILDING_COLOR, 0.3)
 	}
 	
+	this.pathConRes = 3
 	this.paintPath = function(color, size) {
 		size = size || 1
 		fill(color)
+		
 		for (i = 0; i < this.path.length; i++) {
 			drawRectAt(this.path[i].pos, size)
 			if (i+1 < this.path.length) {
-				connection = p5.Vector.add(this.path[i].pos, this.path[i+1].pos)
-				connection.div(2)
-				drawRectAt(connection, size)
+				this.pathConStep = p5.Vector.sub(this.path[i+1].pos, this.path[i].pos)
+				this.pathConStep.div(this.pathConRes)
+				this.connection = this.path[i].pos.copy()
+				for (j = 1; j < this.pathConRes; j++) {
+					this.connection.add(this.pathConStep)
+					drawRectAt(this.connection, size)
+				}
 			}
 		}
 	}
@@ -87,6 +101,9 @@ function solving() {
 			this.path.splice(this.path.length-1)
 		}
 		arr.splice(0, 1)
+		this.destCellIndex = arr.indexOf(this.destCell)
+		if (this.destCellIndex>=0)
+			arr.splice(this.destCellIndex+1, arr.length-this.destCellIndex-1)
 		return this.path.concat(arr)
 	}
 	

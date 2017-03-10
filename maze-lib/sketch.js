@@ -6,8 +6,6 @@ var START_COLOR = 'green'
 var END_COLOR = 'red'
 var HOVER_COLOR = 'pink'
 
-var startCell;
-var destCell;
 var state;
 
 function getTBvalue(name) {
@@ -17,10 +15,18 @@ function getTBvalue(name) {
 	return -1
 }
 
+function setTBvalue(name, value) {
+	document.getElementById(name).value = value
+}
+
 function getInput() {
-	pxlsz = getTBvalue("txtResolution")
-	brdsz = getTBvalue("txtSize")
-	SPEED = getTBvalue("txtSpeed")
+	pxlsz = Math.max(getTBvalue("txtResolution"), 1)
+	brdsz = Math.max(getTBvalue("txtSize"), 7)
+	SPEED = Math.max(getTBvalue("txtSpeed"), 1)
+	
+	setTBvalue("txtResolution", pxlsz)
+	setTBvalue("txtSize", brdsz)
+	setTBvalue("txtSpeed", SPEED)
 }
 
 function setup() {
@@ -32,8 +38,6 @@ function setup() {
 	newMaze()
 	state = new building()
 	state.setup()
-	startCell = maze[floor(random()*brdsz)][floor(random()*brdsz)]
-	destCell = maze[floor(random()*brdsz)][floor(random()*brdsz)]
 }
 
 function newMaze() {
@@ -58,9 +62,4 @@ function drawRectAt(v, size) {
 	rect(v.x*pxlsz+posfx + (1-size)*pxlsz/2,		// x
 		 v.y*pxlsz+posfx + (1-size)*pxlsz/2,		// y
 		(pxlsz+pxlfx)*size, (pxlsz+pxlfx)*size)		// size
-}
-
-function mouseClicked() {
-	//v = createVector(floor(mouseX/pxlsz), floor(mouseY/pxlsz))
-	//console.log(maze[v.x][v.y])
 }
