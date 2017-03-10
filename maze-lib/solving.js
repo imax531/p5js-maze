@@ -6,10 +6,10 @@ function solving() {
 	this.finished
 	this.startCell
 	this.destCell
+	this.BFSdepth = 7
 	
-	// too low  = low autofil capability
-	// too high = takes too long
-	this.depth = 7
+	// path connector resolution
+	this.pathConRes = 3
 	
 	this.setup = function() {
 		do {
@@ -72,7 +72,6 @@ function solving() {
 		this.paintPath(BUILDING_COLOR, 0.3)
 	}
 	
-	this.pathConRes = 3
 	this.paintPath = function(color, size) {
 		size = size || 1
 		fill(color)
@@ -117,7 +116,7 @@ function solving() {
 	}
 	
 	this.BFSscan = function(current, path, paths) {
-		if (path.length >= this.depth || current == 0) return 0
+		if (path.length >= this.BFSdepth || current == 0 || path.includes(current)) return 0
 		path = path.concat([current])
 		if (current.pos.equals(mousePos)) return path
 
