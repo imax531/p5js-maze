@@ -1,6 +1,6 @@
 # p5js-maze
 
-A DFS maze generator in javascript using the p5js framework.
+A DFS maze generator and solving game in javascript using the p5js framework.
 
 Play at: https://www.cs.bgu.ac.il/~roytmax/games/maze.html
 
